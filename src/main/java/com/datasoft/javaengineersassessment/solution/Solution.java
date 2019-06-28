@@ -10,18 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Solution implements Runnable{
-	public boolean check(String [] tbl,String str)
-        {
-            boolean flag=false;
-            for(int i=0;i<tbl.length;i++)
-            {
-                if(str==tbl[i]){
-                    flag=true;
-                }
-            }
-            return flag;
-        }
-	ArrayList <String> key=new ArrayList<String>();
+	
 	/**
 	 * Application entry to your solution
 	 *
@@ -29,8 +18,10 @@ public class Solution implements Runnable{
 	 */
 	@Override
 	public void run() {
-                IO io=new IO();    //making reader object
+                IO io=new IO();//making reader object
                 System.out.println("All set ...");
+                ArrayList <String> key=new ArrayList<String>();
+                key.add("id");
                 String temp="";
                 int n=Integer.parseInt(io.readLine());    //input for test case number
                 for(int t=1;t<=n;t++){
@@ -45,13 +36,13 @@ public class Solution implements Runnable{
                     }
                     JSONObject [] json=new JSONObject[nD];
                     int id=1;
-                    key.add("id");
                     for(int i=0;i<json.length;i++)
                     {
                         JSONParser parser = new JSONParser();
                         try{
                             json[i] = (JSONObject) parser.parse(io.readLine());
                             System.out.println(json[i]);
+                            
                         }
                         catch(Exception e){
                         e.printStackTrace();
@@ -60,43 +51,48 @@ public class Solution implements Runnable{
                         int l=0;
                         while (itr1.hasNext()) {
                             Map.Entry pair = itr1.next();
-                            if(i==0&&((String)pair.getKey())!=tables[0])
+                            
+                            if(i==0&&!(((String)pair.getKey()).equals(tables[0])))
                             {
                                 key.add((String)pair.getKey());
                                 l++;
                             }
-                            else if(i>0&&((String)pair.getKey())!=tables[0]){
+                            else if(i>0&&!(((String)pair.getKey()).equals(tables[0]))){
                                 if(!key.contains((String)pair.getKey()))
                                 {
                                     key.add(l, (String)pair.getKey());
-                                    json[i-1].put((String)pair.getKey(), null);
                                     l++;
                                 }
                                 else{
                                     l++;
                                 }
                             }
-                            else if((String)pair.getKey()==tables[0]){
+                            else if(((String)pair.getKey()).equals(tables[0])){
                                 l=0;
                             break;
                         }
                         }
+                        json[i].put("id", (i+1));
                     }
                     System.out.println("test# "+t);
-                    for(int i=0;i<json.length;i++)
-                    {
+                    String [] keyArr=new String[key.size()];
+                    int kInd=0;
                     for (String k : key) { 		      
-                            System.out.print(k+" "); 		
+                            System.out.print(k+" ");
+                            keyArr[kInd]=k;
+                            kInd++;
                        }
                     System.out.println();
-                        Iterator<Map.Entry> itr1 = json[i].entrySet().iterator();
-                        while (itr1.hasNext()) {
-                            Map.Entry pair = itr1.next();
-                            System.out.print(pair.getValue()+" ");
-                        }
-                        System.out.println();
-                    }
 
+                    for (JSONObject json1 : json) //To print first table
+                    {
+                        for (int ind = 0; ind<keyArr.length; ind++) {
+                            System.out.print(json1.getOrDefault(keyArr[ind], null) + " ");
+                        }
+                        System.out.println();   
+                    }
+                    key=new ArrayList<String>();
+                    System.out.println();
                 }
                     System.out.println("Goodbye :)");
 	}
