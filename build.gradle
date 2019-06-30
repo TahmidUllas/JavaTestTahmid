@@ -11,8 +11,9 @@ repositories {
     mavenCentral()
 }
 
+    ext.mainClass = 'com.datasoft.javaengineersassessment.Main'
+
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
     compile group: 'org.apache.wink', name: 'wink-json4j', version: '1.4'
 }
