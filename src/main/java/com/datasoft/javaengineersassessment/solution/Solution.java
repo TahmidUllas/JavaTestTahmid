@@ -2,10 +2,9 @@ package com.datasoft.javaengineersassessment.solution;
 
 import com.datasoft.javaengineersassessment.utils.IO;
 import org.apache.wink.json4j.*;
-import java.util.Iterator; 
-import java.util.Map; 
-import java.util.ArrayList;
-
+import java.util.*;
+import java.lang.*;
+import java.io.*;
 public class Solution implements Runnable{
 	
 	
@@ -114,7 +113,14 @@ public class Solution implements Runnable{
      */
     @Override
     public void run() {
-        IO io=new IO();                           //Buffer reader
+        //IO io=new IO(); 
+        try
+        {//Buffer reader
+        StringBuilder sb = new StringBuilder();
+        String line;
+        BufferedReader io = new BufferedReader(new InputStreamReader(System.in));
+        
+        
         System.out.println("All set ...");
         int n=Integer.parseInt(io.readLine());    //input for test case number
         for(int t=1;t<=n;t++){
@@ -124,14 +130,40 @@ public class Solution implements Runnable{
             int nT=Integer.parseInt(nTnD[0]),nD=Integer.parseInt(nTnD[1]);;
             String [] tables=(io.readLine()).split(" ");
             OrderedJSONObject [] json=new OrderedJSONObject[nD];
+            Stack <String> paren=new  Stack<>();
+            int ob=0;
+            line= io.readLine();
+            while (!line.equals("")){
+                while(true){
+                    
+                    if(line.equals("{")||line.equals("[")){
+                        sb.append(line);
+                        paren.push(line);
+                        System.out.println(paren.toString());
+                        line=io.readLine();
+                    }
+                    else if(line.equals("}")||line.equals("]")){
+                        sb.append(line);
+                        paren.pop();
+                        line=io.readLine();
+                        if(paren.isEmpty()){
+                            json[ob]=new OrderedJSONObject(sb.toString());
+                            System.out.println(sb.toString());
+                            sb=new StringBuilder();
+                            ob++;
+                            break;
+                        }
+                    }
+                    else{
+                        sb.append(line);
+                        line=io.readLine();
+                    }
+                }
+            }
             for(int i=0;i<json.length;i++)
             {
-                try{
-                    json[i] =new OrderedJSONObject(io.readLine());  //takes input as JSON DATA 
-                }
-                catch(Exception e){
-                    e.printStackTrace();
-                }
+                   
+                    //json[i] =new OrderedJSONObject(sb.toString());  //takes input as JSON DATA 
                 Iterator<Map.Entry> itr1 = json[i].entrySet().iterator();
                 int l=0;
                 int k=0;
@@ -140,16 +172,17 @@ public class Solution implements Runnable{
                 }
                 while (itr1.hasNext()) {
                     Map.Entry pair = itr1.next();
+                    System.out.println((String)pair.getKey());
+                        if(i==0&&(isFirst(tables,(String)pair.getKey())))
+                        {
+                            key.add((String)pair.getKey());
+                            l++;
 
-                    if(i==0&&(isFirst(tables,(String)pair.getKey())))
-                    {
-                        key.add((String)pair.getKey());
-                        l++;
-                    }
+                        }
                     else if(i>0&&(isFirst(tables,(String)pair.getKey()))){
                         if(!key.contains((String)pair.getKey()))
                         {
-                            key.add(l, (String)pair.getKey());
+                            key.add(l,(String)pair.getKey());
                             l++;
                         }
                         else{
@@ -157,7 +190,7 @@ public class Solution implements Runnable{
                         }
                     }
                     else if(!(isFirst(tables,(String)pair.getKey()))){
-                        l=0;
+                        l++;
                         k++;
                         if(k>=tables.length)
                         {
@@ -296,7 +329,14 @@ public class Solution implements Runnable{
                     }
                 }
             }
-            io.readLine();  //to skip the empty line input after each test case
+            //sb=new StringBuilder(); //to skip the empty line input after each test case
+            //line="";
         }
+        io.close();
+        }
+        catch(Exception e)
+        {
+        }
+       
     }
 }
