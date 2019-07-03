@@ -132,23 +132,27 @@ public class Solution implements Runnable{
             OrderedJSONObject [] json=new OrderedJSONObject[nD];
             Stack <String> paren=new  Stack<>();
             int ob=0;
-            line= io.readLine();
+            char tChar;
+            line =" ";
+            outerloop:
             while (!line.equals("")){
                 while(true){
-                    
-                    if(line.equals("{")||line.equals("[")){
-                        sb.append(line);
-                        paren.push(line);
-                        System.out.println(paren.toString());
-                        line=io.readLine();
+                    tChar=line.charAt(0);
+                    line=io.readLine();
+                    if(line.equals("")){
+                        break outerloop;
                     }
-                    else if(line.equals("}")||line.equals("]")){
+                    else if(line.contains("{")||line.contains("[")){
                         sb.append(line);
-                        paren.pop();
-                        line=io.readLine();
+                        paren.push("{");
+                        System.out.println(paren.toString());
+                    }
+                    else if(line.contains("}")||line.contains("]")){
+                        sb.append(line);
+                        System.out.println(paren.pop());
                         if(paren.isEmpty()){
                             json[ob]=new OrderedJSONObject(sb.toString());
-                            System.out.println(sb.toString());
+                            System.out.println(json[ob].toString());
                             sb=new StringBuilder();
                             ob++;
                             break;
@@ -156,10 +160,9 @@ public class Solution implements Runnable{
                     }
                     else{
                         sb.append(line);
-                        line=io.readLine();
                     }
                 }
-            }
+                }
             for(int i=0;i<json.length;i++)
             {
                    
@@ -332,7 +335,7 @@ public class Solution implements Runnable{
             //sb=new StringBuilder(); //to skip the empty line input after each test case
             //line="";
         }
-        io.close();
+        
         }
         catch(Exception e)
         {
